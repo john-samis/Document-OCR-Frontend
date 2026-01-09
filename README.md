@@ -4,7 +4,7 @@ The contents of this repoistory conatain the frontend elements of the Document O
 made primarily for math/physics/engineering work. See more in the other repository.
 
 **NOTE**: This was primarily made through the use of Figma Templates and Figma's proprietary AI Tooling.
-I do _not_ really know Javascript, Typescript, and general npm and Node Js projects.
+I do _not_ really know Javascript, Typescript, React and general npm and Node Js projects.
 
 See [Figma](https://www.figma.com/) for more details.
 
