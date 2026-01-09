@@ -1,0 +1,6 @@
+# Basic Ignores for npm
+node_modules/
+dist/
+.env
+.DS_Store
+.vite
