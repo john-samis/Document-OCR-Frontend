@@ -64,7 +64,7 @@ export function HomePage() {
               <Zap className="size-12 text-blue-600 mb-6" />
               <h3 className="text-xl mb-3">OCR Processing</h3>
               <p className="text-gray-600">
-                Our advanced OCR engine analyzes and extracts text while preserving formatting and layout.
+                EasyOCR engine analyzes and extracts text while preserving formatting and layout.
               </p>
             </CardContent>
           </Card>
@@ -89,7 +89,7 @@ export function HomePage() {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl mb-4">What you get</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Enterprise-grade features without the complexity
+            MVP-grade features without the complexity
           </p>
         </div>
 
@@ -115,6 +115,9 @@ export function HomePage() {
               <p className="text-sm text-gray-600">
                 Most documents processed in under 30 seconds with our optimized OCR pipeline.
               </p>
+              <p className="text-sm text-gray-600">
+                Output document not designed to be perfect, verify where necessary.
+              </p>
             </CardContent>
           </Card>
 
@@ -126,6 +129,9 @@ export function HomePage() {
               <h3 className="text-lg mb-2">No account required</h3>
               <p className="text-sm text-gray-600">
                 Start converting immediately without sign-up, registration, or personal information.
+              </p>
+              <p className="text-sm text-gray-600">
+                Stay-tuned for the future versions!.
               </p>
             </CardContent>
           </Card>
@@ -199,14 +205,8 @@ export function HomePage() {
       {/* Footer */}
       <footer className="border-t bg-gray-50 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
-            <a href="#" className="hover:text-gray-900">Terms</a>
-            <a href="#" className="hover:text-gray-900">Privacy</a>
-            <a href="#" className="hover:text-gray-900">GitHub</a>
-            <a href="#" className="hover:text-gray-900">Contact</a>
-          </div>
           <div className="text-center text-sm text-gray-500 mt-6">
-            © 2026 PDF → DOCX OCR. All rights reserved.
+            © 2026 Document-OCR. All rights reserved.
           </div>
         </div>
       </footer>

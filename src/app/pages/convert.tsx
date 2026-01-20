@@ -172,7 +172,7 @@ export function ConvertPage() {
                   <Upload className="size-12 mx-auto mb-4 text-gray-400" />
                   <p className="text-lg mb-2">Drop PDF here or browse</p>
                   <p className="text-sm text-gray-500">
-                    Accepted formats: PDF • Max size: 50 MB
+                    Accepted formats: PDF. Max size: 25 MB
                   </p>
                 </label>
               </div>
@@ -284,7 +284,7 @@ export function ConvertPage() {
               className="w-full"
               disabled={!settings.confirmRights || state.status !== "idle"}
             >
-              Start conversion
+              Generate .docx
             </Button>
           )}
 
@@ -369,7 +369,7 @@ export function ConvertPage() {
           {/* Privacy Note */}
           <div className="text-center text-sm text-gray-500 pt-4">
             <p>
-              🔒 Files are processed temporarily and automatically deleted after 24 hours
+              Files are processed temporarily and automatically deleted after 24 hours
             </p>
           </div>
         </div>
