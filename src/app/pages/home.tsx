@@ -2,8 +2,19 @@ import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { FileUp, Zap, Download, Shield, Check, AlertCircle, FileText } from "lucide-react";
+import { useEffect, useState } from "react";
+import { smokeTestBackend } from "../../lib/api/api";
+
 
 export function HomePage() {
+  const [backendStatus, setBackendStatus] = useState<"checking" | "up" | "down">("checking");
+
+  useEffect(() => {
+    smokeTestBackend()
+      .then(() => setBackendStatus("up"))
+      .catch(() => setBackendStatus("down"));
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
@@ -206,6 +217,9 @@ export function HomePage() {
       <footer className="border-t bg-gray-50 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center text-sm text-gray-500 mt-6">
+            <p className="text-sm text-gray-500 mt-2">
+            Backend: {backendStatus === "checking" ? "Checking..." : backendStatus === "up" ? "Online" : "Offline"}
+            </p>
             © 2026 Document-OCR. All rights reserved.
           </div>
         </div>

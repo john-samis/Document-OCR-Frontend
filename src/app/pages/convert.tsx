@@ -8,6 +8,8 @@ import { Label } from "../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../components/ui/collapsible";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { createJob, uploadPdf, resultUrl } from "../../lib/api/api";
+
 
 type ConversionStatus = "idle" | "uploading" | "processing" | "ready" | "error";
 
@@ -18,6 +20,7 @@ interface ConversionState {
   fileSize?: string;
   error?: string;
   processingStep?: string;
+  jobId?: string;
 }
 
 export function ConvertPage() {
@@ -61,62 +64,66 @@ export function ConvertPage() {
   }, []);
 
   const processFile = async (file: File) => {
-    const fileSizeKB = (file.size / 1024).toFixed(2);
-    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-    const fileSize = file.size > 1024 * 1024 ? `${fileSizeMB} MB` : `${fileSizeKB} KB`;
-
-    // Uploading phase
+  // block if rights not confirmed (otherwise users can upload accidentally)
+  if (!settings.confirmRights) {
     setState({
-      status: "uploading",
+      status: "error",
       progress: 0,
       fileName: file.name,
+      fileSize: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+      error: "Please confirm you have rights to this document before uploading.",
+    });
+    return;
+  }
+
+  const fileSizeKB = (file.size / 1024).toFixed(2);
+  const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+  const fileSize = file.size > 1024 * 1024 ? `${fileSizeMB} MB` : `${fileSizeKB} KB`;
+
+  try {
+    setState({
+      status: "uploading",
+      progress: 5,
+      fileName: file.name,
       fileSize,
+      processingStep: "Creating job...",
     });
 
-    // Simulate upload progress
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      setState((prev) => ({ ...prev, progress: i }));
-    }
+    const job = await createJob(); // { job_id, }
+    const jobId = job.job_id as string;
 
-    // Processing phase
     setState((prev) => ({
       ...prev,
       status: "processing",
-      progress: 0,
-      processingStep: "Analyzing document structure...",
+      progress: 15,
+      processingStep: "Uploading PDF and running OCR...",
+      jobId,
     }));
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setState((prev) => ({ ...prev, progress: 30, processingStep: "Running OCR on pages..." }));
+    // This call blocks until OCR pipeline finishes
+    await uploadPdf(jobId, file);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setState((prev) => ({ ...prev, progress: 60, processingStep: "Preserving layout and formatting..." }));
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setState((prev) => ({ ...prev, progress: 85, processingStep: "Generating DOCX file..." }));
-
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setState((prev) => ({ ...prev, progress: 100 }));
-
-    // Ready phase
     setState((prev) => ({
       ...prev,
       status: "ready",
       progress: 100,
+      processingStep: undefined,
     }));
-  };
+  } catch (e: any) {
+    setState((prev) => ({
+      ...prev,
+      status: "error",
+      progress: 100,
+      error: e?.message ?? "Upload/processing failed.",
+    }));
+  }
+};
 
   const handleDownload = () => {
-    // Mock download
-    const blob = new Blob(["Mock DOCX content"], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = state.fileName?.replace(".pdf", ".docx") || "converted.docx";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  if (!state.jobId) return;
+  window.location.assign(resultUrl(state.jobId));
+};
+
 
   const handleRetry = () => {
     setState({
